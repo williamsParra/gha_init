@@ -6,7 +6,6 @@ on:
   push:
     paths-ignore:
       - '*.md'
-    branches: [ "main" ]
   issues:
     types: [opened]
 
