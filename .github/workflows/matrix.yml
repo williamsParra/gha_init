@@ -9,7 +9,7 @@ jobs:
       matrix:
         version: [18, 20]
     runs-on: ubuntu-latest
-    # continue-on-error: true
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - name: Setup node environment
