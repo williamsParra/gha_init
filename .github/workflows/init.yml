@@ -1,11 +1,39 @@
-name: 02 - Evento issue
+name: 07b - Entrada y salida con resumen
 on:
   workflow_dispatch:
+    inputs:
+      numero-dados:
+        type: choice
+        options:
+          - uno
+          - dos
+        default: dos
+        description: El número de dados
 jobs:
-  hola-mundo:
+  tirada-dados:
+    outputs:
+      dado1: ${{ steps.dado1.outputs.dado1 }}
+      dado2: ${{ steps.dado2.outputs.dado2 }}
     runs-on: ubuntu-latest
     steps:
-      - name: "say runner os name"
-        run: echo "${{runner.os}}"
-      - name: "say runner arch name"
-        run: echo "${{runner.arch}}"
+      - name: ¿Cuántos dados?
+        run: echo "Hay ${{inputs.numero-dados}} dados"
+      - name: Generar Dado 1
+        id: dado1
+        run: echo "dado1=$((1 + RANDOM % 6))" >> "$GITHUB_OUTPUT"
+      - name: Generar Dado 2
+        if: ${{ inputs.numero-dados == 'dos' }}  
+        id: dado2
+        run: echo "dado2=$((1 + RANDOM % 6))" >> "$GITHUB_OUTPUT"
+      
+  resumen:
+    runs-on: ubuntu-latest
+    needs: tirada-dados
+    steps:
+      - name: Resumen
+        id: resumen
+        run: echo "Hay ${{inputs.numero-dados}} dados /n resultado1 es ${{needs.tirada-dados.outputs.dado1}}" >> "$GITHUB_STEP_SUMMARY"
+      - name: Resumen
+        if: ${{ inputs.numero-dados == 'dos' }}  
+        id: resumen2
+        run: echo "y resultado2 es ${{needs.tirada-dados.outputs.dado2}}" >> "$GITHUB_STEP_SUMMARY"
