@@ -31,9 +31,12 @@ jobs:
     needs: tirada-dados
     steps:
       - name: Resumen
-        id: resumen
-        run: echo "Hay ${{inputs.numero-dados}} dados /n resultado1 es ${{needs.tirada-dados.outputs.dado1}}" >> "$GITHUB_STEP_SUMMARY"
+        id: cantidad
+        run: echo "Hay ${{inputs.numero-dados}} dados" >> "$GITHUB_STEP_SUMMARY"
+      - name: Resumen
+        id: salida1
+        run: echo "el primer dado es ${{needs.tirada-dados.outputs.dado1}}" >> "$GITHUB_STEP_SUMMARY"
       - name: Resumen
         if: ${{ inputs.numero-dados == 'dos' }}  
-        id: resumen2
-        run: echo "y resultado2 es ${{needs.tirada-dados.outputs.dado2}}" >> "$GITHUB_STEP_SUMMARY"
+        id: salida2
+        run: echo "el segundo dado es ${{needs.tirada-dados.outputs.dado2}}" >> "$GITHUB_STEP_SUMMARY"
