@@ -1,42 +1,51 @@
-name: 07b - Entrada y salida con resumen
+name: CI/CD Pipeline test
+
 on:
   workflow_dispatch:
-    inputs:
-      numero-dados:
-        type: choice
-        options:
-          - uno
-          - dos
-        default: dos
-        description: El número de dados
+
 jobs:
-  tirada-dados:
+  build:
+    runs-on: ubuntu-latest
     outputs:
-      dado1: ${{ steps.dado1.outputs.dado1 }}
-      dado2: ${{ steps.dado2.outputs.dado2 }}
-    runs-on: ubuntu-latest
+      step-1-status: ${{ steps.step1.outcome }}
+      step-2-status: ${{ steps.step2.outcome }}
+      step-3-status: ${{ steps.step3.outcome }}
     steps:
-      - name: ¿Cuántos dados?
-        run: echo "Hay ${{inputs.numero-dados}} dados"
-      - name: Generar Dado 1
-        id: dado1
-        run: echo "dado1=$((1 + RANDOM % 6))" >> "$GITHUB_OUTPUT"
-      - name: Generar Dado 2
-        if: ${{ inputs.numero-dados == 'dos' }}  
-        id: dado2
-        run: echo "dado2=$((1 + RANDOM % 6))" >> "$GITHUB_OUTPUT"
-      
-  resumen:
+      - name: Step 1
+        id: step1
+        run: echo "Doing something..."
+
+      - name: Step 2
+        id: step2
+        run: exit 1 # Simulando un fallo
+
+      - name: Step 3
+        id: step3
+        run: echo "Doing something else..."
+
+  summary:
     runs-on: ubuntu-latest
-    needs: tirada-dados
+    needs: build
+    if: always() # Asegúrate de que este job se ejecute siempre
     steps:
-      - name: Resumen
-        id: cantidad
-        run: echo "Hay ${{inputs.numero-dados}} dados" >> "$GITHUB_STEP_SUMMARY"
-      - name: Resumen
-        id: salida1
-        run: echo "el primer dado es ${{needs.tirada-dados.outputs.dado1}}" >> "$GITHUB_STEP_SUMMARY"
-      - name: Resumen
-        if: ${{ inputs.numero-dados == 'dos' }}  
-        id: salida2
-        run: echo "el segundo dado es ${{needs.tirada-dados.outputs.dado2}}" >> "$GITHUB_STEP_SUMMARY"
+      - name: Generate Summary
+        id: generate_summary
+        run: |
+          echo "## Summary of Steps" >> "$GITHUB_STEP_SUMMARY"
+          
+          if [ "${{ needs.build.outputs.step-1-status }}" == "success" ]; then
+            echo "- [x] Step 1 - Completed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- [ ] Step 1 - Failed" >> "$GITHUB_STEP_SUMMARY"
+          
+          
+          if [ "${{ needs.build.outputs.step-2-status }}" == "success" ]; then
+            echo "- [x] Step 2 - Completed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- [ ] Step 2 - Failed" >> "$GITHUB_STEP_SUMMARY"
+          
+          
+          if [ "${{ needs.build.outputs.step-3-status }}" == "success" ]; then
+            echo "- [x] Step 3 - Completed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- [ ] Step 3 - Failed" >> "$GITHUB_STEP_SUMMARY"
