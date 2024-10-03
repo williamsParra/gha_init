@@ -31,21 +31,22 @@ jobs:
       - name: Generate Summary
         id: generate_summary
         run: |
-          echo "## Summary of Steps" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Summary of Steps" >> $GITHUB_STEP_SUMMARY
           
           if [ "${{ needs.build.outputs.step-1-status }}" == "success" ]; then
-            echo "- [x] Step 1 - Completed" >> "$GITHUB_STEP_SUMMARY"
+            echo "- [x] Step 1 - Completed" >> $GITHUB_STEP_SUMMARY
           else
-            echo "- [ ] Step 1 - Failed" >> "$GITHUB_STEP_SUMMARY"
-          
-          
+            echo "- [ ] Step 1 - Failed" >> $GITHUB_STEP_SUMMARY
+          fi # Cerrar el bloque if
+
           if [ "${{ needs.build.outputs.step-2-status }}" == "success" ]; then
-            echo "- [x] Step 2 - Completed" >> "$GITHUB_STEP_SUMMARY"
+            echo "- [x] Step 2 - Completed" >> $GITHUB_STEP_SUMMARY
           else
-            echo "- [ ] Step 2 - Failed" >> "$GITHUB_STEP_SUMMARY"
-          
-          
+            echo "- [ ] Step 2 - Failed" >> $GITHUB_STEP_SUMMARY
+          fi # Cerrar el bloque if
+
           if [ "${{ needs.build.outputs.step-3-status }}" == "success" ]; then
-            echo "- [x] Step 3 - Completed" >> "$GITHUB_STEP_SUMMARY"
+            echo "- [x] Step 3 - Completed" >> $GITHUB_STEP_SUMMARY
           else
-            echo "- [ ] Step 3 - Failed" >> "$GITHUB_STEP_SUMMARY"
+            echo "- [ ] Step 3 - Failed" >> $GITHUB_STEP_SUMMARY
+          fi # Cerrar el bloque if
